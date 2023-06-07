@@ -1,0 +1,32 @@
+{
+	"LogCfg": {
+		"Level": "debug",
+		"FilePath": "./log",
+		"FileName": "kvm_manager.log"
+	},
+	"MysqlCfg": {
+		"kvm_manager": {
+			"MysqlConn": "root:ropon.top@tcp(192.168.1.210:3306)/kvm_manager?charset=utf8mb4&parseTime=true&loc=Local",
+			"MysqlConnectPoolSize": 40
+		}
+	},
+	"RedisSetting": {
+		"kvm_manager": {
+			"RedisConn": "192.168.1.210:6379",
+			"RedisPasswd": "",
+			"RedisDb": 1
+		}
+	},
+	"External": {
+	    "EtcdConn": "http://xxx:2379",
+	    "KafkaAddr": "xxx:9092",
+	    "Key1": "Val1",
+	    "kvm_manager1":"127.0.0.1:2346",
+	    "kvm_manager2":"127.0.0.1:2347",
+	    "JaegerAgentAddr": "192.168.1.210:6831"
+	},
+	"ExternalInt64": {
+        "Key2": 66
+    },
+	"Listen": ":8989"
+}
