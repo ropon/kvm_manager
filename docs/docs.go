@@ -31,6 +31,270 @@ var doc = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/kvm_manager/api/v1/host": {
+            "get": {
+                "description": "获取宿主机列表接口",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "宿主机相关接口"
+                ],
+                "summary": "获取宿主机列表接口",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "备注",
+                        "name": "annotation",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "总核心数",
+                        "name": "cpu",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "create_time",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "已创建虚拟机数量",
+                        "name": "created_vms",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "ipv4地址",
+                        "name": "ipv4",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "最大虚拟机数量",
+                        "name": "max_vms",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "总内存容量，单位GB",
+                        "name": "mem",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "page_num",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "page_size",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "状态",
+                        "name": "status",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "update_time",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "已使用cpu核心数",
+                        "name": "used_cpu",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "已使用内存",
+                        "name": "used_mem",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "服务列表返回结果",
+                        "schema": {
+                            "$ref": "#/definitions/logics.HostRes"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "创建宿主机接口",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "宿主机相关接口"
+                ],
+                "summary": "创建宿主机接口",
+                "parameters": [
+                    {
+                        "description": "请求参数",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/logics.CUHostReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "创建成功返回结果",
+                        "schema": {
+                            "$ref": "#/definitions/models.Host"
+                        }
+                    }
+                }
+            }
+        },
+        "/kvm_manager/api/v1/host/{id}": {
+            "get": {
+                "description": "获取单个宿主机接口",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "宿主机相关接口"
+                ],
+                "summary": "获取单个宿主机接口",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "服务返回结果",
+                        "schema": {
+                            "$ref": "#/definitions/models.Host"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "更新宿主机全部参数接口",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "更新宿主机全部参数接口相关接口"
+                ],
+                "summary": "更新宿主机全部参数接口",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "请求参数",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/logics.CUHostReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "更新成功返回结果",
+                        "schema": {
+                            "$ref": "#/definitions/models.Host"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "删除宿主机接口",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "宿主机相关接口"
+                ],
+                "summary": "删除宿主机接口",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                }
+            },
+            "patch": {
+                "description": "更新宿主机部分参数接口",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "宿主机相关接口"
+                ],
+                "summary": "更新宿主机部分参数接口",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "请求参数",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/logics.HostReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "更新成功返回结果",
+                        "schema": {
+                            "$ref": "#/definitions/models.Host"
+                        }
+                    }
+                }
+            }
+        },
         "/kvm_manager/api/v1/service": {
             "get": {
                 "description": "获取服务列表接口",
@@ -264,9 +528,72 @@ var doc = `{
                     }
                 }
             }
+        },
+        "/kvm_manager/api/v1/vm": {
+            "post": {
+                "description": "创建虚拟机接口",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "虚拟机相关接口"
+                ],
+                "summary": "创建虚拟机接口",
+                "parameters": [
+                    {
+                        "description": "请求参数",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/logics.CUVmReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "创建成功返回结果",
+                        "schema": {
+                            "$ref": "#/definitions/models.Vm"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
+        "logics.CUHostReq": {
+            "type": "object",
+            "required": [
+                "cpu",
+                "ipv4",
+                "max_vms",
+                "mem"
+            ],
+            "properties": {
+                "cpu": {
+                    "type": "integer"
+                },
+                "ipv4": {
+                    "type": "string"
+                },
+                "max_vms": {
+                    "type": "integer"
+                },
+                "mem": {
+                    "type": "integer"
+                },
+                "ops_admin": {
+                    "type": "string"
+                },
+                "user_email": {
+                    "type": "string"
+                }
+            }
+        },
         "logics.CUServiceReq": {
             "type": "object",
             "required": [
@@ -293,6 +620,113 @@ var doc = `{
                 },
                 "user_email": {
                     "type": "string"
+                }
+            }
+        },
+        "logics.CUVmReq": {
+            "type": "object",
+            "required": [
+                "cpu",
+                "host_id",
+                "ipv4",
+                "mem",
+                "name",
+                "os_name"
+            ],
+            "properties": {
+                "cpu": {
+                    "type": "integer"
+                },
+                "host_id": {
+                    "type": "integer"
+                },
+                "ipv4": {
+                    "type": "string"
+                },
+                "mem": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "ops_admin": {
+                    "type": "string"
+                },
+                "os_name": {
+                    "type": "string"
+                },
+                "user_email": {
+                    "type": "string"
+                }
+            }
+        },
+        "logics.HostReq": {
+            "type": "object",
+            "properties": {
+                "annotation": {
+                    "description": "备注",
+                    "type": "string"
+                },
+                "cpu": {
+                    "description": "总核心数",
+                    "type": "integer"
+                },
+                "create_time": {
+                    "type": "string"
+                },
+                "created_vms": {
+                    "description": "已创建虚拟机数量",
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "ipv4": {
+                    "description": "ipv4地址",
+                    "type": "string"
+                },
+                "max_vms": {
+                    "description": "最大虚拟机数量",
+                    "type": "integer"
+                },
+                "mem": {
+                    "description": "总内存容量，单位GB",
+                    "type": "integer"
+                },
+                "page_num": {
+                    "type": "integer"
+                },
+                "page_size": {
+                    "type": "integer"
+                },
+                "status": {
+                    "description": "状态",
+                    "type": "integer"
+                },
+                "update_time": {
+                    "type": "string"
+                },
+                "used_cpu": {
+                    "description": "已使用cpu核心数",
+                    "type": "integer"
+                },
+                "used_mem": {
+                    "description": "已使用内存",
+                    "type": "integer"
+                }
+            }
+        },
+        "logics.HostRes": {
+            "type": "object",
+            "properties": {
+                "host_list": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Host"
+                    }
+                },
+                "total_count": {
+                    "type": "integer"
                 }
             }
         },
@@ -346,6 +780,56 @@ var doc = `{
                 }
             }
         },
+        "models.Host": {
+            "type": "object",
+            "properties": {
+                "annotation": {
+                    "description": "备注",
+                    "type": "string"
+                },
+                "cpu": {
+                    "description": "总核心数",
+                    "type": "integer"
+                },
+                "create_time": {
+                    "type": "string"
+                },
+                "created_vms": {
+                    "description": "已创建虚拟机数量",
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "ipv4": {
+                    "description": "ipv4地址",
+                    "type": "string"
+                },
+                "max_vms": {
+                    "description": "最大虚拟机数量",
+                    "type": "integer"
+                },
+                "mem": {
+                    "description": "总内存容量，单位GB",
+                    "type": "integer"
+                },
+                "status": {
+                    "description": "状态",
+                    "type": "integer"
+                },
+                "update_time": {
+                    "type": "string"
+                },
+                "used_cpu": {
+                    "description": "已使用cpu核心数",
+                    "type": "integer"
+                },
+                "used_mem": {
+                    "description": "已使用内存",
+                    "type": "integer"
+                }
+            }
+        },
         "models.Service": {
             "type": "object",
             "properties": {
@@ -372,6 +856,56 @@ var doc = `{
                     "type": "string"
                 },
                 "update_time": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.Vm": {
+            "type": "object",
+            "properties": {
+                "annotation": {
+                    "description": "备注",
+                    "type": "string"
+                },
+                "cpu": {
+                    "description": "CPU核心数",
+                    "type": "integer"
+                },
+                "create_time": {
+                    "type": "string"
+                },
+                "host_id": {
+                    "description": "宿主机id",
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "ipv4": {
+                    "description": "ipv4地址",
+                    "type": "string"
+                },
+                "mem": {
+                    "description": "内存容量",
+                    "type": "integer"
+                },
+                "name": {
+                    "description": "虚拟机名称",
+                    "type": "string"
+                },
+                "status": {
+                    "description": "状态",
+                    "type": "integer"
+                },
+                "update_time": {
+                    "type": "string"
+                },
+                "uuid": {
+                    "description": "虚拟机UUID",
+                    "type": "string"
+                },
+                "vm_xml": {
+                    "description": "虚拟机xml配置文件",
                     "type": "string"
                 }
             }

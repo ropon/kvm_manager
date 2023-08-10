@@ -6,8 +6,8 @@ package routers
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/ropon/logger"
 	"github.com/ropon/kvm_manager/utils"
+	"github.com/ropon/logger"
 	"time"
 )
 

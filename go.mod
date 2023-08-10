@@ -12,10 +12,13 @@ require (
 	github.com/go-redis/redis v0.0.0-20190803144825-742f3ccb21cd
 	github.com/go-sql-driver/mysql v1.6.1-0.20210825083250-6cf3092b0e12
 	github.com/jinzhu/gorm v1.9.17-0.20210521233931-90f139aba3a6
+	github.com/libvirt/libvirt-go v7.4.0+incompatible
+	github.com/libvirt/libvirt-go-xml v7.4.0+incompatible
 	github.com/mailru/easyjson v0.7.7 // indirect
 	github.com/mattn/go-isatty v0.0.13 // indirect
 	github.com/opentracing/opentracing-go v1.2.0
 	github.com/ropon/logger v1.0.1
+	github.com/satori/go.uuid v1.2.0
 	github.com/swaggo/gin-swagger v1.3.3
 	github.com/swaggo/swag v1.7.6
 	github.com/uber/jaeger-client-go v2.30.0+incompatible

@@ -1,5 +1,25 @@
 basePath: /
 definitions:
+  logics.CUHostReq:
+    properties:
+      cpu:
+        type: integer
+      ipv4:
+        type: string
+      max_vms:
+        type: integer
+      mem:
+        type: integer
+      ops_admin:
+        type: string
+      user_email:
+        type: string
+    required:
+    - cpu
+    - ipv4
+    - max_vms
+    - mem
+    type: object
   logics.CUServiceReq:
     properties:
       author_email:
@@ -19,6 +39,81 @@ definitions:
     - ports
     - svc_name
     - svc_type
+    type: object
+  logics.CUVmReq:
+    properties:
+      cpu:
+        type: integer
+      host_id:
+        type: integer
+      ipv4:
+        type: string
+      mem:
+        type: integer
+      name:
+        type: string
+      ops_admin:
+        type: string
+      os_name:
+        type: string
+      user_email:
+        type: string
+    required:
+    - cpu
+    - host_id
+    - ipv4
+    - mem
+    - name
+    - os_name
+    type: object
+  logics.HostReq:
+    properties:
+      annotation:
+        description: 备注
+        type: string
+      cpu:
+        description: 总核心数
+        type: integer
+      create_time:
+        type: string
+      created_vms:
+        description: 已创建虚拟机数量
+        type: integer
+      id:
+        type: integer
+      ipv4:
+        description: ipv4地址
+        type: string
+      max_vms:
+        description: 最大虚拟机数量
+        type: integer
+      mem:
+        description: 总内存容量，单位GB
+        type: integer
+      page_num:
+        type: integer
+      page_size:
+        type: integer
+      status:
+        description: 状态
+        type: integer
+      update_time:
+        type: string
+      used_cpu:
+        description: 已使用cpu核心数
+        type: integer
+      used_mem:
+        description: 已使用内存
+        type: integer
+    type: object
+  logics.HostRes:
+    properties:
+      host_list:
+        items:
+          $ref: '#/definitions/models.Host'
+        type: array
+      total_count:
+        type: integer
     type: object
   logics.ServiceReq:
     properties:
@@ -54,6 +149,42 @@ definitions:
       total_count:
         type: integer
     type: object
+  models.Host:
+    properties:
+      annotation:
+        description: 备注
+        type: string
+      cpu:
+        description: 总核心数
+        type: integer
+      create_time:
+        type: string
+      created_vms:
+        description: 已创建虚拟机数量
+        type: integer
+      id:
+        type: integer
+      ipv4:
+        description: ipv4地址
+        type: string
+      max_vms:
+        description: 最大虚拟机数量
+        type: integer
+      mem:
+        description: 总内存容量，单位GB
+        type: integer
+      status:
+        description: 状态
+        type: integer
+      update_time:
+        type: string
+      used_cpu:
+        description: 已使用cpu核心数
+        type: integer
+      used_mem:
+        description: 已使用内存
+        type: integer
+    type: object
   models.Service:
     properties:
       author_email:
@@ -75,6 +206,42 @@ definitions:
       update_time:
         type: string
     type: object
+  models.Vm:
+    properties:
+      annotation:
+        description: 备注
+        type: string
+      cpu:
+        description: CPU核心数
+        type: integer
+      create_time:
+        type: string
+      host_id:
+        description: 宿主机id
+        type: integer
+      id:
+        type: integer
+      ipv4:
+        description: ipv4地址
+        type: string
+      mem:
+        description: 内存容量
+        type: integer
+      name:
+        description: 虚拟机名称
+        type: string
+      status:
+        description: 状态
+        type: integer
+      update_time:
+        type: string
+      uuid:
+        description: 虚拟机UUID
+        type: string
+      vm_xml:
+        description: 虚拟机xml配置文件
+        type: string
+    type: object
 host: work-api.xxx.com:8989
 info:
   contact:
@@ -88,6 +255,179 @@ info:
   title: kvm_manager
   version: "1.0"
 paths:
+  /kvm_manager/api/v1/host:
+    get:
+      description: 获取宿主机列表接口
+      parameters:
+      - description: 备注
+        in: query
+        name: annotation
+        type: string
+      - description: 总核心数
+        in: query
+        name: cpu
+        type: integer
+      - in: query
+        name: create_time
+        type: string
+      - description: 已创建虚拟机数量
+        in: query
+        name: created_vms
+        type: integer
+      - in: query
+        name: id
+        type: integer
+      - description: ipv4地址
+        in: query
+        name: ipv4
+        type: string
+      - description: 最大虚拟机数量
+        in: query
+        name: max_vms
+        type: integer
+      - description: 总内存容量，单位GB
+        in: query
+        name: mem
+        type: integer
+      - in: query
+        name: page_num
+        type: integer
+      - in: query
+        name: page_size
+        type: integer
+      - description: 状态
+        in: query
+        name: status
+        type: integer
+      - in: query
+        name: update_time
+        type: string
+      - description: 已使用cpu核心数
+        in: query
+        name: used_cpu
+        type: integer
+      - description: 已使用内存
+        in: query
+        name: used_mem
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 服务列表返回结果
+          schema:
+            $ref: '#/definitions/logics.HostRes'
+      summary: 获取宿主机列表接口
+      tags:
+      - 宿主机相关接口
+    post:
+      consumes:
+      - application/json
+      description: 创建宿主机接口
+      parameters:
+      - description: 请求参数
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/logics.CUHostReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 创建成功返回结果
+          schema:
+            $ref: '#/definitions/models.Host'
+      summary: 创建宿主机接口
+      tags:
+      - 宿主机相关接口
+  /kvm_manager/api/v1/host/{id}:
+    delete:
+      description: 删除宿主机接口
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: 删除宿主机接口
+      tags:
+      - 宿主机相关接口
+    get:
+      description: 获取单个宿主机接口
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 服务返回结果
+          schema:
+            $ref: '#/definitions/models.Host'
+      summary: 获取单个宿主机接口
+      tags:
+      - 宿主机相关接口
+    patch:
+      consumes:
+      - application/json
+      description: 更新宿主机部分参数接口
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 请求参数
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/logics.HostReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 更新成功返回结果
+          schema:
+            $ref: '#/definitions/models.Host'
+      summary: 更新宿主机部分参数接口
+      tags:
+      - 宿主机相关接口
+    put:
+      consumes:
+      - application/json
+      description: 更新宿主机全部参数接口
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 请求参数
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/logics.CUHostReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 更新成功返回结果
+          schema:
+            $ref: '#/definitions/models.Host'
+      summary: 更新宿主机全部参数接口
+      tags:
+      - 更新宿主机全部参数接口相关接口
   /kvm_manager/api/v1/service:
     get:
       description: 获取服务列表接口
@@ -241,4 +581,26 @@ paths:
       summary: 更新服务全部参数接口
       tags:
       - 服务相关接口
+  /kvm_manager/api/v1/vm:
+    post:
+      consumes:
+      - application/json
+      description: 创建虚拟机接口
+      parameters:
+      - description: 请求参数
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/logics.CUVmReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 创建成功返回结果
+          schema:
+            $ref: '#/definitions/models.Vm'
+      summary: 创建虚拟机接口
+      tags:
+      - 虚拟机相关接口
 swagger: "2.0"

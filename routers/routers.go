@@ -5,11 +5,11 @@ import (
 	"fmt"
 	"github.com/gin-contrib/pprof"
 	"github.com/gin-gonic/gin"
-	"github.com/ropon/logger"
 	"github.com/ropon/kvm_manager/conf"
 	"github.com/ropon/kvm_manager/controllers"
 	_ "github.com/ropon/kvm_manager/docs"
 	"github.com/ropon/kvm_manager/utils"
+	"github.com/ropon/logger"
 	gs "github.com/swaggo/gin-swagger"
 	"github.com/swaggo/gin-swagger/swaggerFiles"
 	"net/http"
@@ -38,12 +38,17 @@ func setupRouter() *gin.Engine {
 	{
 		v1.GET("/hi", controllers.Hi)
 
-		v1.POST("/service", controllers.CreateService)
-		v1.DELETE("/service/:id", controllers.DeleteService)
-		v1.PUT("/service/:id", controllers.UpdateService)
-		v1.PATCH("/service/:id", controllers.PatchUpdateService)
-		v1.GET("/service", controllers.GetServices)
-		v1.GET("/service/:id", controllers.GetService)
+		v1.POST("/host", controllers.CreateHost)
+		v1.DELETE("/host/:id", controllers.DeleteHost)
+		v1.PUT("/host/:id", controllers.UpdateHost)
+		v1.PATCH("/host/:id", controllers.PatchUpdateHost)
+		v1.GET("/host", controllers.GetHosts)
+		v1.GET("/host/:id", controllers.GetHost)
+
+		v1.POST("/vm", controllers.CreateVm)
+		v1.DELETE("/vm/:id", controllers.DeleteVm)
+		v1.PUT("/vm/:id", controllers.UpdateVm)
+		v1.PATCH("/vm/:id", controllers.PatchUpdateVm)
 	}
 
 	engine.NoRoute(func(c *gin.Context) {

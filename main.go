@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/ropon/kvm_manager/conf"
+	"github.com/ropon/kvm_manager/logics"
 	"github.com/ropon/kvm_manager/routers"
 )
 
@@ -26,5 +27,6 @@ func main() {
 		return
 	}
 
+	logics.Migrate()
 	routers.Run(conf.Cfg.Listen)
 }

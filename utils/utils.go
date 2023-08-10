@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/ropon/logger"
+	"github.com/satori/go.uuid"
 	"net/http"
 	"time"
 )
@@ -110,4 +111,8 @@ func FormatTime(t time.Time, args ...string) string {
 		layout = args[0]
 	}
 	return t.Format(layout)
+}
+
+func CreateUUID() string {
+	return uuid.NewV4().String()
 }
