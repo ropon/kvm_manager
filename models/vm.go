@@ -13,7 +13,7 @@ type Vm struct {
 	Id            uint      `json:"id" form:"id" gorm:"primary_key,AUTO_INCREMENT"`
 	UUID          string    `json:"uuid" form:"uuid" gorm:"column:uuid"`                         //虚拟机UUID
 	Name          string    `json:"name" form:"name" gorm:"column:name" sql:"unique;not null"`   //虚拟机名称
-	Status        int       `json:"status" form:"status" gorm:"column:status"`                   //状态 0 关机 1开机
+	Status        int       `json:"status" form:"status" gorm:"column:status"`                   //状态 0 关机 1开机 2暂停
 	Cpu           uint      `json:"cpu" form:"cpu" gorm:"column:cpu" sql:"not null"`             //CPU核心数
 	Mem           uint      `json:"mem" form:"mem" gorm:"column:mem" sql:"not null"`             //内存容量
 	HostId        uint      `json:"host_id" form:"host_id" gorm:"column:host_id" sql:"not null"` //宿主机id
@@ -71,7 +71,7 @@ func (s *Vm) Update() (err error) {
 
 // Patch 改(patch /vm/:h_id)/部分
 func (s *Vm) Patch(v interface{}) (err error) {
-	tmp := v.(*Host)
+	tmp := v.(*Vm)
 	tmp.UpdateTime = time.Now()
 	err = conf.MysqlDb.Model(s).Updates(tmp).Error
 	return
@@ -91,7 +91,7 @@ func (s *Vm) GetByIpv4() (err error) {
 
 // List 查(get /vm)多个
 func (s *Vm) List(ctx context.Context, PageSize, PageNum int64) (list VmList, count int64, err error) {
-	sp, _ := utils.ExtractChildSpan("db:get hosts", ctx)
+	sp, _ := utils.ExtractChildSpan("db:get vms", ctx)
 	defer sp.Finish()
 	list = make(VmList, 0)
 	//默认精确匹配

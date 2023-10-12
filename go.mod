@@ -17,7 +17,7 @@ require (
 	github.com/mailru/easyjson v0.7.7 // indirect
 	github.com/mattn/go-isatty v0.0.13 // indirect
 	github.com/opentracing/opentracing-go v1.2.0
-	github.com/ropon/logger v1.0.1
+	github.com/ropon/logger v1.0.2
 	github.com/satori/go.uuid v1.2.0
 	github.com/swaggo/gin-swagger v1.3.3
 	github.com/swaggo/swag v1.7.6

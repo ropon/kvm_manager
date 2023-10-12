@@ -30,10 +30,7 @@ func setupRouter() *gin.Engine {
 	pprof.Register(engine)
 
 	engine.GET("/swagger/*any", gs.WrapHandler(swaggerFiles.Handler))
-	backend := engine.Group("/backend")
-	{
-		backend.Any(":server/*action", controllers.HttpProxy)
-	}
+
 	v1 := engine.Group("/kvm_manager/api/v1")
 	{
 		v1.GET("/hi", controllers.Hi)
@@ -49,6 +46,7 @@ func setupRouter() *gin.Engine {
 		v1.DELETE("/vm/:id", controllers.DeleteVm)
 		v1.PUT("/vm/:id", controllers.UpdateVm)
 		v1.PATCH("/vm/:id", controllers.PatchUpdateVm)
+		v1.GET("/vm", controllers.GetVms)
 	}
 
 	engine.NoRoute(func(c *gin.Context) {

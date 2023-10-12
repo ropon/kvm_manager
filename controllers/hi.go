@@ -32,7 +32,6 @@ func checkData(c *gin.Context, v interface{}) bool {
 	return true
 }
 
-
 func Hi(c *gin.Context) {
 	time.Sleep(time.Second * 10)
 	utils.GinOKRsp(c, "hi ropon", "ok")

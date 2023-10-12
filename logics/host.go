@@ -119,5 +119,5 @@ func GetHost(id uint) (interface{}, error) {
 }
 
 func Migrate() {
-	conf.MysqlDb.AutoMigrate(&models.Host{}, &models.IpInfo{}, &models.OsInfo{}, &models.Vm{})
+	conf.MysqlDb.AutoMigrate(&models.Host{}, &models.IpInfo{}, &models.OsInfo{}, &models.Vm{}, &models.VmStorage{})
 }

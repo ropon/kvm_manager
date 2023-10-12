@@ -110,3 +110,26 @@ func PatchUpdateVm(c *gin.Context) {
 	}
 	utils.GinOKRsp(c, res, "更新成功")
 }
+
+// GetVms 获取虚拟主机列表接口
+// @Summary 获取虚拟主机列表接口
+// @Description 获取虚拟主机列表接口
+// @Tags 虚拟机相关接口
+// @Produce application/json
+// @Param data query logics.VmReq true "请求参数"
+// @Success 200 {object} logics.VmRes "返回结果列表"
+// @Router /kvm_manager/api/v1/vm [get]
+func GetVms(c *gin.Context) {
+	req := new(logics.VmReq)
+	if !checkData(c, req) {
+		return
+	}
+
+	ctx := utils.ExtractStdContext(nil, c.Request.Header)
+	resList, err := logics.GetVms(ctx, req)
+	if err != nil {
+		utils.GinErrRsp(c, utils.ErrCodeGeneralFail, err.Error())
+		return
+	}
+	utils.GinOKRsp(c, resList, "获取列表成功")
+}

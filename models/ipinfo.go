@@ -12,7 +12,7 @@ import (
 type IpInfo struct {
 	Id            uint      `json:"id" form:"id" gorm:"primary_key,AUTO_INCREMENT"`
 	UUID          string    `json:"uuid" form:"uuid" gorm:"column:uuid"`                       //虚拟机UUID
-	Status        int       `json:"status" form:"status" gorm:"column:status"`                 //状态
+	Status        int       `json:"status" form:"status" gorm:"column:status"`                 //状态 0未使用 1已使用
 	Ipv4          string    `json:"ipv4" form:"ipv4" gorm:"column:ipv4" sql:"unique;not null"` //ipv4地址
 	MacAddr       string    `json:"mac_addr" form:"mac_addr" gorm:"column:mac_addr"`           //MAC地址
 	BridgeName    string    `json:"bridge_name" form:"bridge_name"`                            //网桥名称

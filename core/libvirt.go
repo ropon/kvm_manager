@@ -31,7 +31,7 @@ func newLibVirtMgr(hostId uint) (*LibVirtMgr, error) {
 	if err != nil {
 		return nil, err
 	}
-	conn, err := libvirt.NewConnect(fmt.Sprintf("qemu+ssh://devops@%s/system", host.Ipv4))
+	conn, err := libvirt.NewConnect(fmt.Sprintf("qemu+tcp://%s/system", host.Ipv4))
 	if err != nil {
 		return nil, err
 	}

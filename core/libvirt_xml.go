@@ -52,7 +52,7 @@ func (s *LibVirtXmlMgr) createDisk() libvirtxml.DomainDisk {
 	}
 	diskXml.Source = &libvirtxml.DomainDiskSource{
 		File: &libvirtxml.DomainDiskSourceFile{
-			File: fmt.Sprintf("/codoon/%s/%s_os.qcow2", s.VmName, s.VmName),
+			File: fmt.Sprintf("/home/vmdata/%s/%s_os.qcow2", s.VmName, s.VmName),
 		},
 	}
 	diskXml.Target = &libvirtxml.DomainDiskTarget{

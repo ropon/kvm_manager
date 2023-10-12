@@ -1,12 +1,24 @@
 package logics
 
 import (
+	"context"
 	"fmt"
 	"github.com/ropon/kvm_manager/conf"
 	"github.com/ropon/kvm_manager/core"
 	"github.com/ropon/kvm_manager/models"
 	"github.com/ropon/kvm_manager/utils"
 	"github.com/ropon/logger"
+)
+
+var (
+	vmOpTypeMap = map[string]int{
+		"start":    1,
+		"shutdown": 0,
+		"destroy":  0,
+		"suspend":  2,
+		"resume":   1,
+		"reboot":   1,
+	}
 )
 
 type BaseData struct {
@@ -86,7 +98,7 @@ func CreateVm(req *CUVmReq) (*models.Vm, error) {
 		logger.Error("ipInfo.GetByIpv4 failed: %v", err)
 		return nil, err
 	}
-	if ipInfo.Status != 1 {
+	if ipInfo.Status != 0 {
 		return nil, fmt.Errorf("IP:%s不可用", req.Ipv4)
 	}
 
@@ -97,8 +109,8 @@ func CreateVm(req *CUVmReq) (*models.Vm, error) {
 		logger.Error("osInfo.GetByName failed: %v", err)
 		return nil, err
 	}
-	if ipInfo.Status != 1 {
-		return nil, fmt.Errorf("系统:%s不可用", req.OsName)
+	if osInfo.Status != 1 {
+		return nil, fmt.Errorf("系统:%s未启用", req.OsName)
 	}
 
 	//4.准备创建虚拟机信息
@@ -145,7 +157,7 @@ func CreateVm(req *CUVmReq) (*models.Vm, error) {
 		return nil, err
 	}
 
-	ipInfo.Status = 0
+	ipInfo.Status = 1
 	err = ipInfo.UpdateTx(tx)
 	if err != nil {
 		tx.Rollback()
@@ -212,33 +224,65 @@ func PatchUpdateVm(id uint, req *VmReq) (interface{}, error) {
 	if err != nil {
 		return nil, err
 	}
+	vmStatus := 0
 	if req.OpType != "" {
 		switch req.OpType {
 		case "start":
-			_ = libvirtMgr.StartVm(vm.UUID)
+			if vm.Status == 1 {
+				return nil, fmt.Errorf("该实例已启动")
+			}
+			vmStatus = 1
+			err = libvirtMgr.StartVm(vm.UUID)
 		case "shutdown":
-			_ = libvirtMgr.ShutdownVm(vm.UUID)
+			err = libvirtMgr.ShutdownVm(vm.UUID)
 		case "destroy":
-			_ = libvirtMgr.DestroyVm(vm.UUID)
+			err = libvirtMgr.DestroyVm(vm.UUID)
 		case "suspend":
-			_ = libvirtMgr.SuspendVm(vm.UUID)
+			vmStatus = 2
+			err = libvirtMgr.SuspendVm(vm.UUID)
 		case "resume":
-			_ = libvirtMgr.ResumeVm(vm.UUID)
+			vmStatus = 1
+			err = libvirtMgr.ResumeVm(vm.UUID)
 		case "reboot":
-			_ = libvirtMgr.RebootVm(vm.UUID)
+			vmStatus = 1
+			err = libvirtMgr.RebootVm(vm.UUID)
 		default:
 			return nil, fmt.Errorf("不支持此操作")
 		}
 	}
-	return nil, nil
-	//s := req.Vm
-	//do := &DbObj{
-	//	Id:  id,
-	//	Obj: &models.Vm{Id: id},
-	//}
-	//if err := do.patch(&s); err != nil {
-	//	return nil, err
-	//}
-	//do.Obj.(*models.Vm).UpdateTimeStr = s.UpdateTimeStr
-	//return do.Obj, nil
+	if err != nil {
+		return nil, err
+	}
+	s := req.Vm
+	s.Status = vmStatus
+	do := &DbObj{
+		Id:  id,
+		Obj: &models.Vm{Id: id},
+	}
+	if err = do.patch(&s); err != nil {
+		return nil, err
+	}
+	do.Obj.(*models.Vm).UpdateTimeStr = s.UpdateTimeStr
+	return do.Obj, nil
+}
+
+func doOperateVm(vm *models.Vm, wantStatus int) {
+
+}
+
+//获取虚拟主机列表
+func GetVms(ctx context.Context, req *VmReq) (*VmRes, error) {
+	s := req.Vm
+	vml, count, err := s.List(ctx, req.PageSize, req.PageNum)
+	if err != nil {
+		return nil, err
+	}
+	for _, tempS := range vml {
+		tempS.FormatTime()
+	}
+	res := &VmRes{
+		TotalCount: count,
+		VmList:     vml,
+	}
+	return res, nil
 }
