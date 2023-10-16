@@ -12,8 +12,6 @@ require (
 	github.com/go-redis/redis v0.0.0-20190803144825-742f3ccb21cd
 	github.com/go-sql-driver/mysql v1.6.1-0.20210825083250-6cf3092b0e12
 	github.com/jinzhu/gorm v1.9.17-0.20210521233931-90f139aba3a6
-	github.com/libvirt/libvirt-go v7.4.0+incompatible
-	github.com/libvirt/libvirt-go-xml v7.4.0+incompatible
 	github.com/mailru/easyjson v0.7.7 // indirect
 	github.com/mattn/go-isatty v0.0.13 // indirect
 	github.com/opentracing/opentracing-go v1.2.0
@@ -28,4 +26,6 @@ require (
 	golang.org/x/sys v0.0.0-20211216021012-1d35b9e2eb4e // indirect
 	golang.org/x/tools v0.1.8 // indirect
 	google.golang.org/protobuf v1.27.1 // indirect
+	libvirt.org/go/libvirt v1.9007.0
+	libvirt.org/go/libvirtxml v1.9007.0
 )

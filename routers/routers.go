@@ -47,6 +47,12 @@ func setupRouter() *gin.Engine {
 		v1.PUT("/vm/:id", controllers.UpdateVm)
 		v1.PATCH("/vm/:id", controllers.PatchUpdateVm)
 		v1.GET("/vm", controllers.GetVms)
+
+		v1.POST("/vm_storage", controllers.CreateVmStorage)
+
+		v1.POST("/vm_disk", controllers.CreateVmDisk)
+
+		v1.POST("/os_info", controllers.CreateOsInfo)
 	}
 
 	engine.NoRoute(func(c *gin.Context) {

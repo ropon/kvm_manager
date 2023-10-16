@@ -10,17 +10,17 @@ import (
 
 type OsInfo struct {
 	Id            uint      `json:"id" form:"id" gorm:"primary_key,AUTO_INCREMENT"`
+	Status        int       `json:"status" form:"status" gorm:"column:status;default 0"`         //状态 0 未启用 1启用
 	UUID          string    `json:"uuid" form:"uuid" gorm:"column:uuid"`                         //镜像UUID
-	Name          string    `json:"name" form:"name" gorm:"column:name" sql:"not null"`          //镜像名称
-	Status        int       `json:"status" form:"status" gorm:"column:status"`                   //状态 0 未启用 1启用
-	OsType        string    `json:"os_type" form:"os_type" gorm:"column:os_type" sql:"not null"` //镜像类型
-	Storage       string    `json:"storage" form:"storage" gorm:"column:storage" sql:"not null"` //存储信息
-	OsXml         string    `json:"os_xml" form:"os_xml" gorm:"column:os_xml"`                   //镜像xml配置文件
+	VmDiskUUID    string    `json:"vm_disk_uuid" form:"vm_disk_uuid" gorm:"column:vm_disk_uuid"` //虚拟磁盘uuid
+	Name          string    `json:"name" form:"name" gorm:"column:name"`                         //镜像名称
+	OsType        string    `json:"os_type" form:"os_type" gorm:"column:os_type"`                //镜像类型
+	OsXml         string    `json:"os_xml" form:"os_xml" gorm:"column:os_xml;type:text"`         //镜像xml配置文件
 	Annotation    string    `json:"annotation" form:"annotation" gorm:"column:annotation"`       //备注
 	CreateTimeStr string    `json:"create_time" gorm:"-"`
 	UpdateTimeStr string    `json:"update_time" gorm:"-"`
-	CreateTime    time.Time `json:"-" gorm:"column:create_time" sql:"type:datetime"`
-	UpdateTime    time.Time `json:"-" gorm:"column:update_time" sql:"type:datetime"`
+	CreateTime    time.Time `json:"-" gorm:"column:create_time;type:datetime"`
+	UpdateTime    time.Time `json:"-" gorm:"column:update_time;type:datetime"`
 }
 
 type OsInfoList []*OsInfo
@@ -62,6 +62,11 @@ func (s *OsInfo) Patch(v interface{}) (err error) {
 
 func (s *OsInfo) Get() (err error) {
 	err = conf.MysqlDb.Where("id = ?", s.Id).Find(s).Error
+	return
+}
+
+func (s *OsInfo) GetByUUID() (err error) {
+	err = conf.MysqlDb.Where("uuid = ?", s.UUID).Find(s).Error
 	return
 }
 

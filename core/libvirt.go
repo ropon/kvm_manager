@@ -2,32 +2,32 @@ package core
 
 import (
 	"fmt"
-	"github.com/libvirt/libvirt-go"
 	"github.com/ropon/kvm_manager/models"
+	"libvirt.org/go/libvirt"
 )
 
-var libVirtMgrMap = map[uint]*LibVirtMgr{}
+var libVirtMgrMap = map[string]*LibVirtMgr{}
 
 type LibVirtMgr struct {
 	Conn *libvirt.Connect
 }
 
-func GetLibVirtMgr(hostId uint) (*LibVirtMgr, error) {
-	libVirtMgr, ok := libVirtMgrMap[hostId]
+func GetLibVirtMgr(hostUUID string) (*LibVirtMgr, error) {
+	libVirtMgr, ok := libVirtMgrMap[hostUUID]
 	if !ok {
 		var err error
-		libVirtMgr, err = newLibVirtMgr(hostId)
+		libVirtMgr, err = newLibVirtMgr(hostUUID)
 		if err != nil {
 			return nil, err
 		}
-		libVirtMgrMap[hostId] = libVirtMgr
+		libVirtMgrMap[hostUUID] = libVirtMgr
 	}
 	return libVirtMgr, nil
 }
 
-func newLibVirtMgr(hostId uint) (*LibVirtMgr, error) {
-	host := models.Host{Id: hostId}
-	err := host.Get()
+func newLibVirtMgr(hostUUID string) (*LibVirtMgr, error) {
+	host := models.Host{UUID: hostUUID}
+	err := host.GetByUUID()
 	if err != nil {
 		return nil, err
 	}
@@ -133,16 +133,16 @@ func (s *LibVirtMgr) GetDomains() ([]libvirt.Domain, error) {
 	return vms, nil
 }
 
-func DefineVm(hostId uint, vmXml string) error {
-	libVirtMgr, err := GetLibVirtMgr(hostId)
+func DefineVm(hostUUID, vmXml string) error {
+	libVirtMgr, err := GetLibVirtMgr(hostUUID)
 	if err != nil {
 		return err
 	}
 	return libVirtMgr.defineVm(vmXml)
 }
 
-func UnDefineVm(hostId uint, uuid string) error {
-	libVirtMgr, err := GetLibVirtMgr(hostId)
+func UnDefineVm(hostUUID string, uuid string) error {
+	libVirtMgr, err := GetLibVirtMgr(hostUUID)
 	if err != nil {
 		return err
 	}

@@ -11,19 +11,20 @@ import (
 
 type Host struct {
 	Id            uint      `json:"id" form:"id" gorm:"primary_key,AUTO_INCREMENT"`
-	Ipv4          string    `json:"ipv4" form:"ipv4" gorm:"column:ipv4" sql:"unique;not null"`                      //ipv4地址
-	Status        int       `json:"status" form:"status" gorm:"column:status"`                                      //状态
-	Cpu           uint      `json:"cpu" form:"cpu" gorm:"column:cpu" sql:"not null"`                                //总核心数
-	Mem           uint      `json:"mem" form:"mem" gorm:"column:mem" sql:"not null"`                                //总内存容量，单位GB
-	UsedCpu       uint      `json:"used_cpu" form:"used_cpu"`                                                       //已使用cpu核心数
-	UsedMem       uint      `json:"used_mem" form:"used_mem"`                                                       //已使用内存
-	MaxVms        uint      `json:"max_vms" form:"max_vms" gorm:"column:max_vms" sql:"unique;not null"`             //最大虚拟机数量
-	CreatedVms    uint      `json:"created_vms" form:"created_vms" gorm:"column:created_vms" sql:"unique;not null"` //已创建虚拟机数量
-	Annotation    string    `json:"annotation" form:"annotation" gorm:"column:annotation"`                          //备注
+	Cpu           uint      `json:"cpu" form:"cpu" gorm:"column:cpu"`                         //总核心数
+	Mem           uint      `json:"mem" form:"mem" gorm:"column:mem"`                         //总内存容量，单位GB
+	UsedCpu       uint      `json:"used_cpu" form:"used_cpu"`                                 //已使用cpu核心数
+	UsedMem       uint      `json:"used_mem" form:"used_mem"`                                 //已使用内存
+	MaxVms        uint      `json:"max_vms" form:"max_vms" gorm:"column:max_vms"`             //最大虚拟机数量
+	CreatedVms    uint      `json:"created_vms" form:"created_vms" gorm:"column:created_vms"` //已创建虚拟机数量
+	Status        int       `json:"status" form:"status" gorm:"column:status"`                //状态
+	UUID          string    `json:"uuid" form:"uuid" gorm:"column:uuid"`                      //宿主机UUID
+	Ipv4          string    `json:"ipv4" form:"ipv4" gorm:"column:ipv4"`                      //ipv4地址
+	Annotation    string    `json:"annotation" form:"annotation" gorm:"column:annotation"`    //备注
 	CreateTimeStr string    `json:"create_time" gorm:"-"`
 	UpdateTimeStr string    `json:"update_time" gorm:"-"`
-	CreateTime    time.Time `json:"-" gorm:"column:create_time" sql:"type:datetime"`
-	UpdateTime    time.Time `json:"-" gorm:"column:update_time" sql:"type:datetime"`
+	CreateTime    time.Time `json:"-" gorm:"column:create_time;type:datetime"`
+	UpdateTime    time.Time `json:"-" gorm:"column:update_time;type:datetime"`
 }
 
 type HostList []*Host
@@ -79,6 +80,11 @@ func (s *Host) Patch(v interface{}) (err error) {
 // Get 查(get /host/:h_id)一个
 func (s *Host) Get() (err error) {
 	err = conf.MysqlDb.Where("id = ?", s.Id).Find(s).Error
+	return
+}
+
+func (s *Host) GetByUUID() (err error) {
+	err = conf.MysqlDb.Where("uuid = ?", s.UUID).Find(s).Error
 	return
 }
 

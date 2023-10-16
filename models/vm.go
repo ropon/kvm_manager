@@ -11,19 +11,19 @@ import (
 
 type Vm struct {
 	Id            uint      `json:"id" form:"id" gorm:"primary_key,AUTO_INCREMENT"`
-	UUID          string    `json:"uuid" form:"uuid" gorm:"column:uuid"`                         //虚拟机UUID
-	Name          string    `json:"name" form:"name" gorm:"column:name" sql:"unique;not null"`   //虚拟机名称
-	Status        int       `json:"status" form:"status" gorm:"column:status"`                   //状态 0 关机 1开机 2暂停
-	Cpu           uint      `json:"cpu" form:"cpu" gorm:"column:cpu" sql:"not null"`             //CPU核心数
-	Mem           uint      `json:"mem" form:"mem" gorm:"column:mem" sql:"not null"`             //内存容量
-	HostId        uint      `json:"host_id" form:"host_id" gorm:"column:host_id" sql:"not null"` //宿主机id
-	Ipv4          string    `json:"ipv4" form:"ipv4" gorm:"column:ipv4" sql:"unique;not null"`   //ipv4地址
-	VmXml         string    `json:"vm_xml" form:"vm_xml" gorm:"column:vm_xml"`                   //虚拟机xml配置文件
-	Annotation    string    `json:"annotation" form:"annotation" gorm:"column:annotation"`       //备注
+	Cpu           uint      `json:"cpu" form:"cpu" gorm:"column:cpu"`                      //CPU核心数
+	Mem           uint      `json:"mem" form:"mem" gorm:"column:mem"`                      //内存容量
+	Status        int       `json:"status" form:"status" gorm:"column:status"`             //状态 0 关机 1开机 2暂停
+	UUID          string    `json:"uuid" form:"uuid" gorm:"column:uuid"`                   //虚拟机UUID
+	HostUUID      string    `json:"host_uuid" form:"host_uuid" gorm:"column:host_uuid"`    //宿主机uuid
+	Name          string    `json:"name" form:"name" gorm:"column:name"`                   //虚拟机名称
+	Ipv4          string    `json:"ipv4" form:"ipv4" gorm:"column:ipv4"`                   //ipv4地址
+	VmXml         string    `json:"vm_xml" form:"vm_xml" gorm:"column:vm_xml;type:text"`   //虚拟机xml配置文件
+	Annotation    string    `json:"annotation" form:"annotation" gorm:"column:annotation"` //备注
 	CreateTimeStr string    `json:"create_time" gorm:"-"`
 	UpdateTimeStr string    `json:"update_time" gorm:"-"`
-	CreateTime    time.Time `json:"-" gorm:"column:create_time" sql:"type:datetime"`
-	UpdateTime    time.Time `json:"-" gorm:"column:update_time" sql:"type:datetime"`
+	CreateTime    time.Time `json:"-" gorm:"column:create_time;type:datetime"`
+	UpdateTime    time.Time `json:"-" gorm:"column:update_time;type:datetime"`
 }
 
 type VmList []*Vm

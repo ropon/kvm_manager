@@ -5,13 +5,16 @@ import (
 	"fmt"
 	"github.com/ropon/kvm_manager/conf"
 	"github.com/ropon/kvm_manager/models"
+	"github.com/ropon/kvm_manager/utils"
 )
 
 type CUHostReq struct {
-	Ipv4   string `json:"ipv4" form:"ipv4" binding:"required"`
-	Cpu    uint   `json:"cpu" form:"cpu" binding:"required"`
-	Mem    uint   `json:"mem" form:"mem" binding:"required"`
-	MaxVms uint   `json:"max_vms" form:"max_vms" binding:"required"`
+	Cpu        uint   `json:"cpu" form:"cpu" binding:"required"`
+	Mem        uint   `json:"mem" form:"mem" binding:"required"`
+	MaxVms     uint   `json:"max_vms" form:"max_vms" binding:"required"`
+	Status     int    `json:"status" form:"status"`
+	Ipv4       string `json:"ipv4" form:"ipv4" binding:"required"`
+	Annotation string `json:"annotation" form:"annotation"`
 	BaseData
 }
 
@@ -28,10 +31,12 @@ type HostRes struct {
 
 func initHost(req *CUHostReq) *models.Host {
 	return &models.Host{
-		Ipv4:   req.Ipv4,
-		Cpu:    req.Cpu,
-		Mem:    req.Mem,
-		MaxVms: req.MaxVms,
+		Ipv4:       req.Ipv4,
+		Cpu:        req.Cpu,
+		Mem:        req.Mem,
+		MaxVms:     req.MaxVms,
+		Status:     req.Status,
+		Annotation: req.Annotation,
 	}
 }
 
@@ -42,7 +47,7 @@ func CreateHost(req *CUHostReq) (*models.Host, error) {
 	if err == nil && s.Id != 0 {
 		return nil, fmt.Errorf("ipv4地址:%s对应宿主机已存在", s.Ipv4)
 	}
-
+	s.UUID = utils.CreateUUID()
 	err = s.Create()
 	if err != nil {
 		return nil, err
@@ -119,5 +124,6 @@ func GetHost(id uint) (interface{}, error) {
 }
 
 func Migrate() {
-	conf.MysqlDb.AutoMigrate(&models.Host{}, &models.IpInfo{}, &models.OsInfo{}, &models.Vm{}, &models.VmStorage{})
+	conf.MysqlDb.AutoMigrate(&models.VmSnapShot{}, &models.Host{}, &models.IpInfo{}, &models.OsInfo{}, &models.Vm{},
+		&models.VmStorage{}, &models.VmDisk{})
 }

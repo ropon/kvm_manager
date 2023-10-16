@@ -27,12 +27,12 @@ type BaseData struct {
 }
 
 type CUVmReq struct {
-	Name   string `json:"name" form:"name" binding:"required"`
-	Ipv4   string `json:"ipv4" form:"ipv4" binding:"required"`
-	OsName string `json:"os_name" form:"os_name" binding:"required"`
-	Cpu    uint   `json:"cpu" form:"cpu" binding:"required"`
-	Mem    uint   `json:"mem" form:"mem" binding:"required"`
-	HostId uint   `json:"host_id" form:"host_id" binding:"required"`
+	Name     string `json:"name" form:"name" binding:"required"`
+	Ipv4     string `json:"ipv4" form:"ipv4" binding:"required"`
+	OsUUID   string `json:"os_uuid" form:"os_uuid" binding:"required"`
+	HostUUID string `json:"host_uuid" form:"host_uuid" binding:"required"`
+	Cpu      uint   `json:"cpu" form:"cpu" binding:"required"`
+	Mem      uint   `json:"mem" form:"mem" binding:"required"`
 	BaseData
 }
 
@@ -59,11 +59,11 @@ func (bp *BaseData) Init(userEmail, opsAdmin string) {
 
 func initVm(req *CUVmReq) *models.Vm {
 	return &models.Vm{
-		Name:   req.Name,
-		Ipv4:   req.Ipv4,
-		Cpu:    req.Cpu,
-		Mem:    req.Mem,
-		HostId: req.HostId,
+		Name:     req.Name,
+		Ipv4:     req.Ipv4,
+		Cpu:      req.Cpu,
+		Mem:      req.Mem,
+		HostUUID: req.HostUUID,
 	}
 }
 
@@ -76,10 +76,13 @@ func CreateVm(req *CUVmReq) (*models.Vm, error) {
 	}
 
 	//1.检查宿主机资源是否够
-	host := models.Host{Id: s.HostId}
-	err = host.Get()
+	host := models.Host{UUID: s.HostUUID}
+	err = host.GetByUUID()
 	if err != nil {
 		return nil, err
+	}
+	if host.Status != 1 {
+		return nil, fmt.Errorf("ip:%s对应宿主机状态不可用", host.Ipv4)
 	}
 	if req.Cpu+host.UsedCpu > host.Cpu {
 		return nil, fmt.Errorf("cpu资源不足")
@@ -99,19 +102,19 @@ func CreateVm(req *CUVmReq) (*models.Vm, error) {
 		return nil, err
 	}
 	if ipInfo.Status != 0 {
-		return nil, fmt.Errorf("IP:%s不可用", req.Ipv4)
+		return nil, fmt.Errorf("IP:%s不可用", ipInfo.Ipv4)
 	}
 
 	//3.获取系统详情
-	osInfo := models.OsInfo{Name: req.OsName}
-	err = osInfo.GetByName()
+	osDiskStorageInfo := models.Disk2StorageInfo{UUID: req.OsUUID}
+	err = osDiskStorageInfo.GetByUUID()
 	if err != nil {
-		logger.Error("osInfo.GetByName failed: %v", err)
 		return nil, err
 	}
-	if osInfo.Status != 1 {
-		return nil, fmt.Errorf("系统:%s未启用", req.OsName)
+	if osDiskStorageInfo.Status != 1 {
+		return nil, fmt.Errorf("该系统未启用")
 	}
+	//osInfo.VmDiskUUID
 
 	//4.准备创建虚拟机信息
 	/*
@@ -119,9 +122,9 @@ func CreateVm(req *CUVmReq) (*models.Vm, error) {
 	*/
 	s.UUID = utils.CreateUUID()
 	xmlMgr := core.LibVirtXmlMgr{
-		UUIDStr:    s.UUID,
-		VmName:     req.Name,
-		OsXml:      osInfo.OsXml,
+		UUIDStr: s.UUID,
+		VmName:  req.Name,
+		//OsXml:      osInfo.OsXml,
 		MacAddr:    ipInfo.MacAddr,
 		BridgeName: ipInfo.BridgeName,
 		Cpu:        req.Cpu,
@@ -134,7 +137,7 @@ func CreateVm(req *CUVmReq) (*models.Vm, error) {
 	}
 	s.VmXml = defineXml
 
-	err = core.DefineVm(req.HostId, defineXml)
+	err = core.DefineVm(req.HostUUID, defineXml)
 	if err != nil {
 		return nil, err
 	}
@@ -183,7 +186,7 @@ func DeleteVm(id uint) error {
 	//if err != nil {
 	//	return err
 	//}
-	err = core.UnDefineVm(vm.HostId, vm.UUID)
+	err = core.UnDefineVm(vm.HostUUID, vm.UUID)
 	if err != nil {
 		return err
 	}
@@ -220,7 +223,7 @@ func PatchUpdateVm(id uint, req *VmReq) (interface{}, error) {
 	//if err != nil {
 	//	return nil, err
 	//}
-	libvirtMgr, err := core.GetLibVirtMgr(vm.HostId)
+	libvirtMgr, err := core.GetLibVirtMgr(vm.HostUUID)
 	if err != nil {
 		return nil, err
 	}

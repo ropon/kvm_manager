@@ -2,7 +2,7 @@ package core
 
 import (
 	"fmt"
-	libvirtxml "github.com/libvirt/libvirt-go-xml"
+	libvirtxml "libvirt.org/go/libvirtxml"
 )
 
 const (
